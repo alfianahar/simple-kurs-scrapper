@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 7000;
 
 // Import routes
 const indexingRoutes = require('./routes/indexing');
@@ -12,7 +12,7 @@ const indexingRoutes = require('./routes/indexing');
 app.use(express.json());
 
 // Routes
-app.use('/api/indexing', indexingRoutes.getIndexing);
+app.get('/api/indexing', indexingRoutes.getIndexing);
 // app.use('/api/kurs', kursRoutes);
 
 // Start the server
