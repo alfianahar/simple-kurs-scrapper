@@ -1,20 +1,22 @@
 const mysql = require('mysql2/promise');
 
+const env = process.env;
+
 // Create a MySQL connection pool
-const sqlConnection = mysql.createPool({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+const db = mysql.createPool({
+    host: env.DB_HOST,
+    port: env.DB_PORT,
+    user: env.DB_USER,
+    password: env.DB_PASSWORD,
+    database: env.DB_DATABASE,
     connectionLimit: 10 // adjust the value as per your requirements
 });
 
-sqlConnection.on('acquire', (connection) => {
+db.on('acquire', (connection) => {
     console.log('Connection %d acquired', connection.threadId);
 });
 
-sqlConnection.getConnection((err, connection) => {
+db.getConnection((err, connection) => {
     if (err) {
         console.error('Error connecting to the database:', err);
         return;
@@ -23,4 +25,5 @@ sqlConnection.getConnection((err, connection) => {
     console.log('Connected to the database');
 });
 
-module.exports = sqlConnection;
+module.exports = db;
+

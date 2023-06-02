@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { v4: uuidv4 } = require('uuid');
-const sqlConnection = require('../config/dbConfig');
+const db = require('../configs/db.config');
 
 // GET /api/indexing
 const getIndexing = async (req, res) => {
@@ -12,7 +12,7 @@ const getIndexing = async (req, res) => {
     try {
         // Check if data for the current date already exists in ExchangeRate table
         const checkDateQuery = 'SELECT COUNT(*) AS count FROM ExchangeRate WHERE createdDate = ?';
-        const [checkDateResult] = await sqlConnection.query(checkDateQuery, [currentDate]);
+        const [checkDateResult] = await db.query(checkDateQuery, [currentDate]);
 
         if (checkDateResult[0].count > 0) {
             return res.status(200).json({ message: 'Data for the current date already exists.' });
@@ -59,7 +59,7 @@ const getIndexing = async (req, res) => {
 
                 // Check if symbol already exists in Currency table (case-insensitive comparison)
                 const checkQuery = 'SELECT currency_id FROM Currency WHERE LOWER(symbol) = LOWER(?)';
-                const [checkResult] = await sqlConnection.query(checkQuery, [currencyCode.toLowerCase()]);
+                const [checkResult] = await db.query(checkQuery, [currencyCode.toLowerCase()]);
 
                 if (checkResult.length > 0) {
                     const currencyId = checkResult[0].currency_id;
@@ -70,19 +70,19 @@ const getIndexing = async (req, res) => {
 
                     // Insert data into ERate table
                     const eRateQuery = 'INSERT INTO ERate (erate_id, jual, beli) VALUES (?, ?, ?)';
-                    await sqlConnection.query(eRateQuery, [eRateId, item.e_rate.jual, item.e_rate.beli]);
+                    await db.query(eRateQuery, [eRateId, item.e_rate.jual, item.e_rate.beli]);
 
                     // Insert data into TTCounter table
                     const ttCounterQuery = 'INSERT INTO TTCounter (tt_counter_id, jual, beli) VALUES (?, ?, ?)';
-                    await sqlConnection.query(ttCounterQuery, [ttCounterId, item.tt_counter.jual, item.tt_counter.beli]);
+                    await db.query(ttCounterQuery, [ttCounterId, item.tt_counter.jual, item.tt_counter.beli]);
 
                     // Insert data into BankNotes table
                     const bankNotesQuery = 'INSERT INTO BankNotes (bank_notes_id, jual, beli) VALUES (?, ?, ?)';
-                    await sqlConnection.query(bankNotesQuery, [bankNotesId, item.bank_notes.jual, item.bank_notes.beli]);
+                    await db.query(bankNotesQuery, [bankNotesId, item.bank_notes.jual, item.bank_notes.beli]);
 
                     // Insert data into ExchangeRate table
                     const exchangeRateQuery = 'INSERT INTO ExchangeRate (exchange_rate_id, currency_id, erate_id, tt_counter_id, bank_notes_id, createdDate) VALUES (?, ?, ?, ?, ?, ?)';
-                    await sqlConnection.query(exchangeRateQuery, [exchangeRateId, currencyId, eRateId, ttCounterId, bankNotesId, currentDate]);
+                    await db.query(exchangeRateQuery, [exchangeRateId, currencyId, eRateId, ttCounterId, bankNotesId, currentDate]);
 
                 } else {
                     // Symbol doesn't exist in Currency table, handle the case accordingly
