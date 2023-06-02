@@ -71,25 +71,10 @@ const getIndexing = async (req, res) => {
                         const exchangeRateQuery = 'INSERT INTO ExchangeRate (exchange_rate_id, currency_id, erate_id, tt_counter_id, bank_notes_id, createdDate) VALUES (?, ?, ?, ?, ?, ?)';
                         await sqlConnection.query(exchangeRateQuery, [exchangeRateId, currencyId, eRateId, ttCounterId, bankNotesId, date]);
 
-                        // Continue with other operations or processing if needed
-
                     } else {
                         // Symbol doesn't exist in Currency table, handle the case accordingly
                         console.log(`Symbol ${currencyCode} does not exist in Currency table.`);
                     }
-
-                    // // Insert exchange rates into ERate, TTCounter, and BankNotes tables
-                    // const erateQuery = `INSERT INTO ERate (erate_id, jual, beli) VALUES (?, ?, ?)`;
-                    // const ttCounterQuery = `INSERT INTO TTCounter (tt_counter_id, jual, beli) VALUES (?, ?, ?)`;
-                    // const bankNotesQuery = `INSERT INTO BankNotes (bank_notes_id, jual, beli) VALUES (?, ?, ?)`;
-                    // const [erateResult] = await sqlConnection.query(erateQuery, [currencyCode, eRateSell, eRateBuy]);
-                    // const [ttCounterResult] = await sqlConnection.query(ttCounterQuery, [currencyCode, ttSell, ttBuy]);
-                    // const [bankNotesResult] = await sqlConnection.query(bankNotesQuery, [currencyCode, bnSell, bnBuy]);
-
-                    // // Insert exchange rate data into ExchangeRate table
-                    // const exchangeRateQuery = `INSERT INTO ExchangeRate (exchange_rate_id, currency_id, erate_id, tt_counter_id, bank_notes_id, createdDate) VALUES (?, ?, ?, ?, ?, ?)`;
-                    // await sqlConnection.query(exchangeRateQuery, [uuidv4(), currencyCode, erateResult.insertId, ttCounterResult.insertId, bankNotesResult.insertId, date]);
-
 
                 } catch (error) {
                     console.error(error);
