@@ -41,9 +41,21 @@ async function create(req, res, next) {
     }
 }
 
+async function update(req, res, next) {
+    try {
+        const kursData = req.body;
+        const result = await kursService.updateKurs(kursData);
+        res.json(result);
+    } catch (err) {
+        console.error(`Error while creating Kurs`, err.message);
+        next(err);
+    }
+}
+
 module.exports = {
     remove,
     get,
     getSymbol,
-    create
+    create,
+    update
 }

@@ -10,4 +10,6 @@ router.get('/kurs/:symbol', kursController.getSymbol);
 
 router.post('/kurs', kursController.create);
 
+router.put('/kurs/', kursController.update);
+
 module.exports = router;
