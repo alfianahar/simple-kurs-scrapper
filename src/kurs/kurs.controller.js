@@ -2,9 +2,10 @@ const kursService = require('./kurs.service');
 
 async function remove(req, res, next) {
     try {
-        res.json(await kursService.removeKurs(req.params.date));
+        const result = await kursService.removeKurs(req.params.date);
+        return res.json(result);
     } catch (err) {
-        console.error(`Error while getting Kurs`, err.message);
+        console.error(`An error occurred while deleting kuurs`, err.message);
         next(err);
     }
 }
@@ -25,7 +26,7 @@ async function getSymbol(req, res, next) {
         const { startdate, enddate } = req.query;
         res.json(await kursService.getKursBySymbol(symbol, startdate, enddate));
     } catch (err) {
-        console.error(`Error while getting Kurs`, err.message);
+        console.error(`Error while getting Kurs using symbol`, err.message);
         next(err);
     }
 }

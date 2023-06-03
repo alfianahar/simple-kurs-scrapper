@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "test:idx": "mocha test/indexing.test.js",
+    "test:kurs": "mocha test/kurs.test.js"
   },
   "dependencies": {
     "axios": "^1.4.0",
@@ -14,6 +16,11 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.3.3",
     "nodemon": "^2.0.22",
+    "sinon": "^15.1.0",
+    "supertest": "^6.3.3",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
   }
 }
