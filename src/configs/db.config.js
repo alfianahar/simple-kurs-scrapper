@@ -16,14 +16,19 @@ db.on('acquire', (connection) => {
     console.log('Connection %d acquired', connection.threadId);
 });
 
-db.getConnection((err, connection) => {
-    if (err) {
+const connectToDatabase = async () => {
+    try {
+        const connection = await db.getConnection();
+        console.log('Connected to the database');
+        connection.release();
+    } catch (err) {
         console.error('Error connecting to the database:', err);
-        return;
     }
-    connection.release();
-    console.log('Connected to the database');
-});
+};
+
+connectToDatabase();
+
+
 
 module.exports = db;
 

@@ -1,21 +1,32 @@
 require('dotenv').config();
 
 const express = require('express');
-
 const app = express();
 const port = process.env.PORT || 7000;
 
 // Import routes
-const indexingRoutes = require('./src/routes/indexing');
-// const kursRoutes = require('./routes/kurs');
+const indexingRouter = require('./src/indexing/indexing.route');
+const kursRouter = require('./src/kurs/kurs.route');
+
+app.get('/', (req, res) => {
+    res.json({ 'message': 'ok' });
+})
+
+// Routes
+app.use('/api', indexingRouter);
+app.use('/api', kursRouter);
 
 // Middleware
 app.use(express.json());
 
-// Routes
-app.get('/api/indexing', indexingRoutes.getIndexing);
-// app.get('/api/indexing', kursRoutes.getIndexing);
-// app.use('/api/kurs', kursRoutes);
+// Error handler middleware
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    console.error(err.message, err.stack);
+    res.status(statusCode).json({ 'message': err.message });
+
+    return;
+});
 
 // Start the server
 app.listen(port, () => {
