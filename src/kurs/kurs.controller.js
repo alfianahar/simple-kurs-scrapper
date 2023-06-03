@@ -1,8 +1,8 @@
 const kursService = require('./kurs.service');
 
-async function get(req, res, next) {
+async function remove(req, res, next) {
     try {
-        res.json(await kursService.getKurs(req.query.page));
+        res.json(await kursService.removeKurs(req.params.date));
     } catch (err) {
         console.error(`Error while getting Kurs`, err.message);
         next(err);
@@ -10,5 +10,5 @@ async function get(req, res, next) {
 }
 
 module.exports = {
-    get,
+    remove,
 };

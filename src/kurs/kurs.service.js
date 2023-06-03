@@ -1,14 +1,34 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
-const { v4: uuidv4 } = require('uuid');
 const db = require('../configs/db.config');
 
-const getKurs = async (req, res) => {
-    const currentDate = new Date().toISOString().split('T')[0];
+const removeKurs = async (date) => {
+    console.log(date)
 
-    return { currentDate };
+    try {
+        // Delete records from ExchangeRate table
+        const deleteExchangeRateQuery = 'DELETE FROM ExchangeRate WHERE DATE_FORMAT(createdDate, "%Y-%m-%d") = ?';
+        await db.query(deleteExchangeRateQuery, [date]);
+
+        // Delete related records from ERate table
+        const deleteERateQuery = 'DELETE FROM ERate WHERE erate_id NOT IN (SELECT erate_id FROM ExchangeRate)';
+        await db.query(deleteERateQuery);
+
+        // Delete related records from TTCounter table
+        const deleteTTCounterQuery = 'DELETE FROM TTCounter WHERE tt_counter_id NOT IN (SELECT tt_counter_id FROM ExchangeRate)';
+        await db.query(deleteTTCounterQuery);
+
+        // Delete related records from BankNotes table
+        const deleteBankNotesQuery = 'DELETE FROM BankNotes WHERE bank_notes_id NOT IN (SELECT bank_notes_id FROM ExchangeRate)';
+        await db.query(deleteBankNotesQuery);
+
+        return { message: 'Records deleted successfully.' };
+
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while deleting the records.');
+    }
+
 }
 
 module.exports = {
-    getKurs
+    removeKurs
 }
