@@ -222,58 +222,53 @@ const updateKurs = async (kursData) => {
         await db.query(query, [rateId, jual, beli]);
     };
 
-    try {
-        const currencyId = await getCurrencyId(symbol);
+    const currencyId = await getCurrencyId(symbol);
 
-        // Check if data already exists for the given symbol and date
-        const checkDataQuery = 'SELECT COUNT(*) AS count FROM ExchangeRate WHERE currency_id = ? AND DATE_FORMAT(createdDate, "%Y-%m-%d") = ?';
-        const [checkDataResult] = await db.query(checkDataQuery, [currencyId, date]);
+    // Check if data already exists for the given symbol and date
+    const checkDataQuery = 'SELECT COUNT(*) AS count FROM ExchangeRate WHERE currency_id = ? AND DATE_FORMAT(createdDate, "%Y-%m-%d") = ?';
+    const [checkDataResult] = await db.query(checkDataQuery, [currencyId, date]);
 
-        if (checkDataResult[0].count === 0) {
-            throw new Error('Data not found for the given symbol and date.');
-        }
+    if (checkDataResult[0].count === 0) {
+        throw new Error('Data not found for the given symbol and date.');
+    }
 
-        const exchangeRateId = uuidv4();
-        const eRateId = uuidv4();
-        const ttCounterId = uuidv4();
-        const bankNotesId = uuidv4();
+    const exchangeRateId = uuidv4();
+    const eRateId = uuidv4();
+    const ttCounterId = uuidv4();
+    const bankNotesId = uuidv4();
 
-        // Insert data into ERate table
-        await insertRate('ERate', 'erate_id', eRateId, e_rate.jual, e_rate.beli);
+    // Insert data into ERate table
+    await insertRate('ERate', 'erate_id', eRateId, e_rate.jual, e_rate.beli);
 
-        // Insert data into TTCounter table
-        await insertRate('TTCounter', 'tt_counter_id', ttCounterId, tt_counter.jual, tt_counter.beli);
+    // Insert data into TTCounter table
+    await insertRate('TTCounter', 'tt_counter_id', ttCounterId, tt_counter.jual, tt_counter.beli);
 
-        // Insert data into BankNotes table
-        await insertRate('BankNotes', 'bank_notes_id', bankNotesId, bank_notes.jual, bank_notes.beli);
+    // Insert data into BankNotes table
+    await insertRate('BankNotes', 'bank_notes_id', bankNotesId, bank_notes.jual, bank_notes.beli);
 
-        // Update data in ExchangeRate table
-        const updateQuery = `
+    // Update data in ExchangeRate table
+    const updateQuery = `
       UPDATE ExchangeRate
       SET erate_id = ?, tt_counter_id = ?, bank_notes_id = ?, createdDate = ?
       WHERE currency_id = ? AND DATE_FORMAT(createdDate, "%Y-%m-%d") = ?`;
-        await db.query(updateQuery, [eRateId, ttCounterId, bankNotesId, date, currencyId, date]);
+    await db.query(updateQuery, [eRateId, ttCounterId, bankNotesId, date, currencyId, date]);
 
-        return {
-            symbol: symbol,
-            e_rate: {
-                jual: e_rate.jual,
-                beli: e_rate.beli
-            },
-            tt_counter: {
-                jual: tt_counter.jual,
-                beli: tt_counter.beli
-            },
-            bank_notes: {
-                jual: bank_notes.jual,
-                beli: bank_notes.beli
-            },
-            date: date
-        };
-    } catch (error) {
-        console.error(error);
-        throw new Error('An error occurred while updating Kurs data.');
-    }
+    return {
+        symbol: symbol,
+        e_rate: {
+            jual: e_rate.jual,
+            beli: e_rate.beli
+        },
+        tt_counter: {
+            jual: tt_counter.jual,
+            beli: tt_counter.beli
+        },
+        bank_notes: {
+            jual: bank_notes.jual,
+            beli: bank_notes.beli
+        },
+        date: date
+    };
 };
 
 module.exports = {

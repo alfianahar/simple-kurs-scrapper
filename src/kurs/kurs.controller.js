@@ -45,9 +45,13 @@ async function update(req, res, next) {
     try {
         const kursData = req.body;
         const result = await kursService.updateKurs(kursData);
-        res.json(result);
+        if (result.error) {
+            res.status(404).json({ message: result.error });
+        } else {
+            res.json(result);
+        }
     } catch (err) {
-        console.error(`Error while creating Kurs`, err.message);
+        console.error(`Error while updating Kurs`, err.message);
         next(err);
     }
 }
