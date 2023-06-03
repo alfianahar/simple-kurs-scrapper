@@ -9,6 +9,17 @@ async function remove(req, res, next) {
     }
 }
 
+async function get(req, res, next) {
+    try {
+        const { startdate, enddate } = req.query;
+        res.json(await kursService.getKurs(startdate, enddate));
+    } catch (err) {
+        console.error(`Error while getting Kurs`, err.message);
+        next(err);
+    }
+}
+
 module.exports = {
     remove,
+    get
 };

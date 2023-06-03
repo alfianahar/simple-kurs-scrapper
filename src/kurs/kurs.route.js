@@ -4,4 +4,6 @@ const kursController = require('./kurs.controller');
 
 router.delete('/kurs/:date', kursController.remove);
 
+router.get('/kurs', kursController.get);
+
 module.exports = router;
