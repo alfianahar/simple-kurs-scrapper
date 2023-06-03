@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "1d3a98cf-a403-4008-89f8-1bbf133cfe51",
+		"name": "kurs-scrapper",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14669035"
+	},
+	"item": [
+		{
+			"name": "get indexing",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:7000/api/indexing",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"indexing"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete kurs by date",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:7000/api/kurs/2023-06-03",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"kurs",
+						"2023-06-03"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get kurs between range of date",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:7000/api/kurs?startdate=2023-06-02&enddate=2023-06-03",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"kurs"
+					],
+					"query": [
+						{
+							"key": "startdate",
+							"value": "2023-06-02"
+						},
+						{
+							"key": "enddate",
+							"value": "2023-06-03"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get kurs by symbol between range of date",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:7000/api/kurs/USD?startdate=2023-06-02&enddate=2023-06-03",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"kurs",
+						"USD"
+					],
+					"query": [
+						{
+							"key": "startdate",
+							"value": "2023-06-02"
+						},
+						{
+							"key": "enddate",
+							"value": "2023-06-03"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create kurs",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"symbol\": \"BBB\",\r\n    \"e_rate\": {\r\n        \"jual\": 1803.55,\r\n        \"beli\": 177355\r\n    },\r\n    \"tt_counter\": {\r\n        \"jual\": 1803.55,\r\n        \"beli\": 177355\r\n    },\r\n    \"bank_notes\": {\r\n        \"jual\": 1803.55,\r\n        \"beli\": 177355\r\n    },\r\n    \"date\": \"2018-05-17\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:7000/api/kurs",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"kurs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update kurs",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"symbol\": \"BBB\",\r\n    \"e_rate\": {\r\n        \"jual\": 1803.55,\r\n        \"beli\": 177355\r\n    },\r\n    \"tt_counter\": {\r\n        \"jual\": 1803.55,\r\n        \"beli\": 177355\r\n    },\r\n    \"bank_notes\": {\r\n        \"jual\": 1803.55,\r\n        \"beli\": 177355\r\n    },\r\n    \"date\": \"2018-05-17\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:7000/api/kurs",
+					"host": [
+						"localhost"
+					],
+					"port": "7000",
+					"path": [
+						"api",
+						"kurs"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
