@@ -19,7 +19,19 @@ async function get(req, res, next) {
     }
 }
 
+async function getSymbol(req, res, next) {
+    try {
+        const { symbol } = req.params;
+        const { startdate, enddate } = req.query;
+        res.json(await kursService.getKursBySymbol(symbol, startdate, enddate));
+    } catch (err) {
+        console.error(`Error while getting Kurs`, err.message);
+        next(err);
+    }
+}
+
 module.exports = {
     remove,
-    get
+    get,
+    getSymbol
 };
