@@ -1,12 +1,15 @@
 require('dotenv').config();
 
 const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 7000;
 
 // Import routes
 const indexingRouter = require('./src/indexing/indexing.route');
 const kursRouter = require('./src/kurs/kurs.route');
+
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => {
     res.json({ 'message': 'ok' });

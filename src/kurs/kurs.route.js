@@ -8,4 +8,6 @@ router.get('/kurs', kursController.get);
 
 router.get('/kurs/:symbol', kursController.getSymbol);
 
+router.post('/kurs', kursController.create);
+
 module.exports = router;

@@ -1,4 +1,5 @@
 const db = require('../configs/db.config');
+const { v4: uuidv4 } = require('uuid');
 
 const removeKurs = async (date) => {
     try {
@@ -77,8 +78,6 @@ const getKurs = async (startdate, enddate) => {
 }
 
 const getKursBySymbol = async (symbol, startdate, enddate) => {
-    console.log(symbol, startdate, enddate)
-
     try {
         const query = `
       SELECT
@@ -126,10 +125,83 @@ const getKursBySymbol = async (symbol, startdate, enddate) => {
     }
 }
 
+const createKurs = async (kursData) => {
+    const { symbol, e_rate, tt_counter, bank_notes, date } = kursData;
 
+    const getCurrencyId = async (symbol) => {
+        const checkQuery = 'SELECT currency_id FROM Currency WHERE LOWER(symbol) = LOWER(?)';
+        const [checkResult] = await db.query(checkQuery, [symbol.toLowerCase()]);
+
+        if (checkResult.length > 0) {
+            return checkResult[0].currency_id;
+        } else {
+            const currencyId = uuidv4();
+            const currencyQuery = 'INSERT INTO Currency (currency_id, symbol) VALUES (?, ?)';
+            await db.query(currencyQuery, [currencyId, symbol]);
+
+            return currencyId;
+        }
+    };
+
+    const insertRate = async (table, column, rateId, jual, beli) => {
+        const query = `INSERT INTO ${table} (${column}, jual, beli) VALUES (?, ?, ?)`;
+        await db.query(query, [rateId, jual, beli]);
+    };
+
+    try {
+        const currencyId = await getCurrencyId(symbol);
+
+        // Check if data already exists for the given symbol and date
+        const checkDataQuery = 'SELECT COUNT(*) AS count FROM ExchangeRate WHERE currency_id = ? AND DATE_FORMAT(createdDate, "%Y-%m-%d") = ?';
+        const [checkDataResult] = await db.query(checkDataQuery, [currencyId, date]);
+
+        if (checkDataResult[0].count > 0) {
+            return { message: 'Data already exists for the given symbol and date.' };
+        }
+
+        const exchangeRateId = uuidv4();
+        const eRateId = uuidv4();
+        const ttCounterId = uuidv4();
+        const bankNotesId = uuidv4();
+
+        // Insert data into ERate table
+        await insertRate('ERate', 'erate_id', eRateId, e_rate.jual, e_rate.beli);
+
+        // Insert data into TTCounter table
+        await insertRate('TTCounter', 'tt_counter_id', ttCounterId, tt_counter.jual, tt_counter.beli);
+
+        // Insert data into BankNotes table
+        await insertRate('BankNotes', 'bank_notes_id', bankNotesId, bank_notes.jual, bank_notes.beli);
+
+        // Insert data into ExchangeRate table
+        const exchangeRateQuery = 'INSERT INTO ExchangeRate (exchange_rate_id, currency_id, erate_id, tt_counter_id, bank_notes_id, createdDate) VALUES (?, ?, ?, ?, ?, ?)';
+        await db.query(exchangeRateQuery, [exchangeRateId, currencyId, eRateId, ttCounterId, bankNotesId, date]);
+
+        return {
+            symbol: symbol,
+            e_rate: {
+                jual: e_rate.jual,
+                beli: e_rate.beli
+            },
+            tt_counter: {
+                jual: tt_counter.jual,
+                beli: tt_counter.beli
+            },
+            bank_notes: {
+                jual: bank_notes.jual,
+                beli: bank_notes.beli
+            },
+            date: date
+        };
+    } catch (error) {
+        console.error(error);
+        throw new Error('An error occurred while creating Kurs data.');
+    }
+};
 
 module.exports = {
     removeKurs,
     getKurs,
-    getKursBySymbol
+    getKursBySymbol,
+    createKurs
 }

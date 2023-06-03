@@ -30,8 +30,20 @@ async function getSymbol(req, res, next) {
     }
 }
 
+async function create(req, res, next) {
+    try {
+        const kursData = req.body;
+        const result = await kursService.createKurs(kursData);
+        res.json(result);
+    } catch (err) {
+        console.error(`Error while creating Kurs`, err.message);
+        next(err);
+    }
+}
+
 module.exports = {
     remove,
     get,
-    getSymbol
-};
+    getSymbol,
+    create
+}
